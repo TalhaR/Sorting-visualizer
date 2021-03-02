@@ -14,12 +14,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Controls() {
+function Controls({setSorter}) {
     const classes = useStyles();
+
+    const selectSorter = (algorithm) => {
+        console.log('button pressed');
+        setSorter(algorithm);
+    }
 
     return (
         <Grid item xs={12} sm={12} className={classes.root} component="section">
-            <Button color="primary" variant="contained">
+            <Button color="primary" variant="contained" onClick={() => selectSorter('bubble')}>
                 Bubble
             </Button>
         </Grid>
