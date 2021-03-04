@@ -1,21 +1,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    bar: {
         backgroundColor: 'gray',
         border: '2px solid black',
         height: '100px',
         width: '50px',
-        margin: '0px 10px'
-    },
-    
+        margin: '0px 10px',
+    }
 }));
 
 function Element({height, width}) {
     const classes = useStyles();
 
     return (
-        <div className={classes.root} style={{ height: height, width: width}} >
+        <div className={classes.bar} style={{ height: height, width: width}} >
             
         </div>
     )

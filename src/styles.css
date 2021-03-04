@@ -1,0 +1,20 @@
+.root {
+    background-color: darkgrey;
+    height: 1000px;
+    justify-content: center;
+}
+.visualization {
+    height: 900px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+
+.bar {
+    background-color: gray;
+    border: 2px solid black;
+    height: 100px;
+    width: 50px;
+    margin: 0px 10px;
+}
