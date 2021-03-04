@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Controls({setSorter}) {
+function Controls({setSorter, resetArray}) {
     const classes = useStyles();
 
     const selectSorter = (algorithm) => {
@@ -24,6 +24,9 @@ function Controls({setSorter}) {
 
     return (
         <Grid item xs={12} sm={12} className={classes.root} component="section">
+            <Button color="primary" variant="contained" onClick={() => resetArray()}>
+                Reset
+            </Button>
             <Button color="primary" variant="contained" onClick={() => selectSorter('bubble')}>
                 Bubble
             </Button>
