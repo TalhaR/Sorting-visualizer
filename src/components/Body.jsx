@@ -19,6 +19,7 @@ class Body extends React.Component {
         }
         this.bubbleSort = this.bubbleSort.bind(this);
         this.resetArray = this.resetArray.bind(this);
+        this.handleSort = this.handleSort.bind(this);
     }
 
     componentDidMount() {
@@ -29,8 +30,25 @@ class Body extends React.Component {
         console.log('updated');
     }
 
+    handleSort(algorithm) {
+        this.setState({isRunning: true,});
+        switch (algorithm) {
+            case 'bubble':
+                this.bubbleSort();
+                break;
+            case 'quick':
+                break;
+            case 'merge':
+                break;
+            case 'heap':
+                break;
+            default:
+                console.log('unexpected parameter for handleSort');
+                this.setState({isRunning: false,});
+        }
+    }
+
     async bubbleSort() {
-        this.setState({isRunning: true});
         const array = [...this.state.elements];
         const domBars = document.getElementsByClassName('bar');
         console.log('starting sort')
@@ -59,7 +77,6 @@ class Body extends React.Component {
         }
 
         this.setState({isRunning: false});
-
         console.log('done sorting');
     };
 
@@ -69,7 +86,7 @@ class Body extends React.Component {
                 <Grid item xs={12} sm={10} md={8} className="visualization" component="section">
                     { this.state.elements }
                 </Grid>
-                <Controls setSorter={this.bubbleSort} resetArray={this.resetArray} isRunning={this.state.isRunning} />
+                <Controls setSorter={this.handleSort} resetArray={this.resetArray} isRunning={this.state.isRunning} />
             </Grid>
         )
     };
@@ -80,7 +97,6 @@ class Body extends React.Component {
         }
 
         const array = [];
-        
         for(let i = 0; i < 10; ++i) {
             array.push(<Element height={getRandomInt(25, 500)} key={i} />);
         }
@@ -90,9 +106,7 @@ class Body extends React.Component {
             bar.style.backgroundColor = 'gray';
         }
 
-        this.setState({elements: array}, () => {
-            console.log(this.state.elements)
-        })
+        this.setState({elements: array}, () => console.log(this.state.elements));
     }
 }
 

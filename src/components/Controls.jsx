@@ -30,6 +30,15 @@ function Controls({setSorter, resetArray, isRunning}) {
             <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('bubble')}>
                 Bubble
             </Button>
+            <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('quick')}>
+                Quick
+            </Button>
+            <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('merge')}>
+                Merge
+            </Button>
+            <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('heap')}>
+                Heap
+            </Button>
         </Grid>
     )
 }
