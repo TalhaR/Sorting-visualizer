@@ -5,7 +5,7 @@ import Element from './Element'
 import '../styles.css'
 
 function sleep(ms) {
-    console.log('waiting');
+    // console.log('waiting');
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -16,10 +16,12 @@ class Body extends React.Component {
         this.state = {
             elements: [],
             isRunning: false,
+            maxBars: 10,
         }
         this.bubbleSort = this.bubbleSort.bind(this);
         this.resetArray = this.resetArray.bind(this);
         this.handleSort = this.handleSort.bind(this);
+        this.handleSize = this.handleSize.bind(this);
     }
 
     componentDidMount() {
@@ -28,6 +30,14 @@ class Body extends React.Component {
 
     componentDidUpdate() {
         console.log('updated');
+    }
+
+    handleSize(num) {
+        if (num === this.state.maxBars) return;
+        console.log(num);
+
+        this.setState({maxBars: num,});
+        this.resetArray();
     }
 
     handleSort(algorithm) {
@@ -58,7 +68,7 @@ class Body extends React.Component {
                 // highlight comparing elements in green
                 domBars[j].style.backgroundColor = 'green';
                 domBars[j + 1].style.backgroundColor = 'green';
-                await sleep(100);
+                await sleep(10);
 
                 if (array[j].props.height > array[j + 1].props.height) {
                     // highlight swapping elements red
@@ -66,7 +76,7 @@ class Body extends React.Component {
                     domBars[j + 1].style.backgroundColor = 'red';
                     [array[j], array[j + 1]] = [array[j + 1], array[j]];
                     this.setState({elements: array,});
-                    await sleep(200);
+                    await sleep(25);
                 } 
                 // post-swap reset to normal
                 domBars[j].style.backgroundColor = 'gray';
@@ -83,10 +93,10 @@ class Body extends React.Component {
     render() {
         return (
             <Grid container className="root" component="main">
-                <Grid item xs={12} sm={10} md={8} className="visualization" component="section">
+                <Grid item xs={12} md={11} className="visualization" component="section">
                     { this.state.elements }
                 </Grid>
-                <Controls setSorter={this.handleSort} resetArray={this.resetArray} isRunning={this.state.isRunning} />
+                <Controls setSorter={this.handleSort} setSize={this.handleSize} resetArray={this.resetArray} isRunning={this.state.isRunning} />
             </Grid>
         )
     };
@@ -97,7 +107,7 @@ class Body extends React.Component {
         }
 
         const array = [];
-        for(let i = 0; i < 10; ++i) {
+        for(let i = 0; i < this.state.maxBars; ++i) {
             array.push(<Element height={getRandomInt(25, 500)} key={i} />);
         }
 
