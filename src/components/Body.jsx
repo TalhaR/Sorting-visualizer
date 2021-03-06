@@ -19,10 +19,11 @@ class Body extends React.Component {
             isRunning: false,
             maxBars: 10,
         }
-        this.bubbleSort = this.bubbleSort.bind(this);
         this.resetArray = this.resetArray.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleSize = this.handleSize.bind(this);
+        this.bubbleSort = this.bubbleSort.bind(this);
+        this.quickSort = this.quickSort.bind(this);
         this.mergeSort = this.mergeSort.bind(this);
     }
 
@@ -57,6 +58,10 @@ class Body extends React.Component {
                 console.log('unexpected parameter for handleSort');
                 this.setState({isRunning: false,});
         }
+    }
+
+    quickSort(array) {
+
     }
     
     async mergeSort(array) {
