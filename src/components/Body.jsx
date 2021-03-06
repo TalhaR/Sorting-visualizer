@@ -3,6 +3,8 @@ import { Grid } from '@material-ui/core'
 import Controls from './Controls'
 import Element from './Element'
 import '../styles.css'
+import '../helper/mergeSort'
+import getMergeAnimations from '../helper/mergeSort'
 
 function sleep(ms) {
     // console.log('waiting');
@@ -22,6 +24,8 @@ class Body extends React.Component {
         this.resetArray = this.resetArray.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleSize = this.handleSize.bind(this);
+        // test
+        this.mergeSort = this.mergeSort.bind(this);
     }
 
     componentDidMount() {
@@ -29,12 +33,14 @@ class Body extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('updated');
+        // console.log('updated');
+        // console.log(
+        //     this.state.elements.map((x) => x.props.height)
+        // )
     }
 
     handleSize(num) {
         if (num === this.state.maxBars) return;
-        console.log(num);
 
         this.setState({maxBars: num,});
         this.resetArray();
@@ -42,13 +48,15 @@ class Body extends React.Component {
 
     handleSort(algorithm) {
         this.setState({isRunning: true,});
+        let array = [...this.state.elements];
         switch (algorithm) {
             case 'bubble':
-                this.bubbleSort();
+                this.bubbleSort(array);
                 break;
             case 'quick':
                 break;
             case 'merge':
+                this.mergeSort(array);
                 break;
             case 'heap':
                 break;
@@ -57,9 +65,42 @@ class Body extends React.Component {
                 this.setState({isRunning: false,});
         }
     }
+    
+    async mergeSort(array) {
+        console.log('starting sort');
+        const animations = getMergeAnimations(array);
+        const domBars = document.getElementsByClassName('bar');
 
-    async bubbleSort() {
-        const array = [...this.state.elements];
+        console.log(animations);
+
+        for (let i = 0; i < animations.length; ++i) {
+            if (i % 2 === 0) {
+                const [index1, index2] = animations[i];
+
+                // const color = i % 3 === 0 ? 'red' : 'green';
+                domBars[index1].style.backgroundColor = 'green';
+                domBars[index2].style.backgroundColor = 'green';
+                await sleep(10);
+                domBars[index1].style.backgroundColor = 'gray';
+                domBars[index2].style.backgroundColor = 'gray';
+            } else {
+                const [index1, element] = animations[i];
+                array[index1] = <Element key={'overwrite' + i} height={element.props.height} />;
+                
+                this.setState({elements: array});
+                domBars[index1].style.backgroundColor = 'red';
+                domBars[element.key].style.backgroundColor = 'red';
+                await sleep(10);
+                domBars[index1].style.backgroundColor = 'gray';
+                domBars[element.key].style.backgroundColor = 'gray';
+            }
+        }
+
+        this.setState({isRunning: false});
+        console.log('done sorting');
+    }
+    
+    async bubbleSort(array) {
         const domBars = document.getElementsByClassName('bar');
         console.log('starting sort')
 
@@ -108,7 +149,8 @@ class Body extends React.Component {
 
         const array = [];
         for(let i = 0; i < this.state.maxBars; ++i) {
-            array.push(<Element height={getRandomInt(25, 500)} key={i} />);
+            const height = getRandomInt(25, 500);
+            array.push(<Element height={height} key={i} />);
         }
 
         const domBars = document.getElementsByClassName('bar');
@@ -116,7 +158,7 @@ class Body extends React.Component {
             bar.style.backgroundColor = 'gray';
         }
 
-        this.setState({elements: array}, () => console.log(this.state.elements));
+        this.setState({elements: array});
     }
 }
 

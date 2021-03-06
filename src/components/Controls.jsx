@@ -32,7 +32,6 @@ function Controls({setSorter, setSize, resetArray, isRunning}) {
     const classes = useStyles();
 
     const selectSorter = (algorithm) => {
-        console.log('button pressed');
         setSorter(algorithm);
     }
 
@@ -52,7 +51,7 @@ function Controls({setSorter, setSize, resetArray, isRunning}) {
                 <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('quick')}>
                     Quick
                 </Button>
-                <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('merge')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('merge')}>
                     Merge
                 </Button>
                 <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('heap')}>
