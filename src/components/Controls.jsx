@@ -7,9 +7,9 @@ const useStyles = makeStyles((theme) => ({
     },
     arrayControls: {
         height: '100px',
-        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexWrap: 'wrap',
         '& > *': {
             margin: theme.spacing(1),
         },
@@ -24,11 +24,10 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     slider: {
-        maxWidth: '60%',
     }
 }));
 
-function Controls({setSorter, setSize, resetArray, isRunning}) {
+function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
     const classes = useStyles();
 
     const selectSorter = (algorithm) => {
@@ -37,12 +36,20 @@ function Controls({setSorter, setSize, resetArray, isRunning}) {
 
     return (
         <Grid container item xs={12} className={classes.root} component="section">
-            <Grid item xs={12} sm={6} className={classes.arrayControls}>
-                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => resetArray()}>
-                    Reset
-                </Button>
+            <Grid container item xs={12} sm={6} className={classes.arrayControls}>
+                <Grid item>
+                    <Button color="primary" variant="contained" disabled={isRunning} onClick={() => resetArray()}>
+                        Reset
+                    </Button>
+                </Grid>
+                <Grid item xs={7} md={8}>
 
-                <Slider className={classes.slider} defaultValue={10} step={5} marks min={5} max={100} valueLabelDisplay="auto" disabled={isRunning} onChange={(e, value) => setSize(value)} />
+                    <Slider className={classes.slider} defaultValue={10} step={5} marks min={5} max={100} 
+                            valueLabelDisplay="auto" disabled={isRunning} onChange={(e, value) => setSize(value)} />
+
+                    <Slider className={classes.slider} defaultValue={2} step={1} marks min={1} max={5} 
+                            valueLabelDisplay="auto" onChangeCommitted={(e, value) => setSpeed(value)} />
+                </Grid>
             </Grid>
             <Grid item xs={12} sm={6} className={classes.sortControls}>
                 <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('bubble')}>

@@ -24,10 +24,12 @@ class Body extends React.Component {
             elements: [],
             isRunning: false,
             maxBars: 10,
+            speed: 50,
         }
         this.resetArray = this.resetArray.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleSize = this.handleSize.bind(this);
+        this.handleSpeed = this.handleSpeed.bind(this);
         this.bubbleSort = this.bubbleSort.bind(this);
         this.quickSort = this.quickSort.bind(this);
         this.mergeSort = this.mergeSort.bind(this);
@@ -44,6 +46,11 @@ class Body extends React.Component {
 
         this.setState({maxBars: num,});
         this.resetArray();
+    }
+
+    handleSpeed(num) {
+        if (num === this.state.speed) return;
+        this.setState({speed: 50 / num});
     }
 
     handleSort(algorithm) {
@@ -77,14 +84,14 @@ class Body extends React.Component {
 
             for(let i = start; i < end; ++i) {
                 setColor([domBars[i]], 'green');
-                await sleep(20);
+                await sleep(this.state.speed);
 
                 if (array[i].props.height <= pivotValue.props.height) {
                     setColor([domBars[i], domBars[pivotIndex]], 'red');
 
                     [array[i], array[pivotIndex]] = [array[pivotIndex], array[i]];
                     this.setState({elements: array});
-                    await sleep(20);
+                    await sleep(this.state.speed);
 
                     setColor([domBars[i], domBars[pivotIndex]], 'gray');
                     ++pivotIndex;
@@ -95,7 +102,7 @@ class Body extends React.Component {
             setColor([domBars[end], domBars[pivotIndex]], 'red');
             [array[end], array[pivotIndex]] = [array[pivotIndex], array[end]];
             this.setState({elements: array});
-            await sleep(20);
+            await sleep(this.state.speed);
             setColor([domBars[end], domBars[pivotIndex]], 'gray');
 
             return pivotIndex;
@@ -129,7 +136,7 @@ class Body extends React.Component {
                 const [index1, index2] = animations[i];
 
                 setColor([domBars[index1], domBars[index2]], 'green');
-                await sleep(25);
+                await sleep(this.state.speed);
                 setColor([domBars[index1], domBars[index2]], 'gray');
             } else {
                 const [index1, element] = animations[i];
@@ -137,7 +144,7 @@ class Body extends React.Component {
                 
                 this.setState({elements: array});
                 setColor([domBars[index1], domBars[element.key]], 'red');
-                await sleep(25);
+                await sleep(this.state.speed);
                 setColor([domBars[index1], domBars[element.key]], 'gray');
             }
         }
@@ -151,14 +158,14 @@ class Body extends React.Component {
             for(let j = 0; j < array.length - 1 - i; ++j) {
                 // highlight comparing elements in green
                 setColor([domBars[j], domBars[j + 1]], 'green');
-                await sleep(10);
+                await sleep(this.state.speed);
 
                 if (array[j].props.height > array[j + 1].props.height) {
                     // highlight swapping elements red
                     setColor([domBars[j], domBars[j + 1]], 'red');
                     [array[j], array[j + 1]] = [array[j + 1], array[j]];
                     this.setState({elements: array,});
-                    await sleep(10);
+                    await sleep(this.state.speed);
                 } 
                 // post-swap reset to normal
                 setColor([domBars[j], domBars[j + 1]], 'gray');
@@ -176,7 +183,7 @@ class Body extends React.Component {
                 <Grid item xs={12} md={11} className="visualization" component="section">
                     { this.state.elements }
                 </Grid>
-                <Controls setSorter={this.handleSort} setSize={this.handleSize} 
+                <Controls setSorter={this.handleSort} setSize={this.handleSize} setSpeed={this.handleSpeed}
                             resetArray={this.resetArray} isRunning={this.state.isRunning} />
             </Grid>
         )
