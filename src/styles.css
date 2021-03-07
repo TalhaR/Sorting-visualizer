@@ -13,16 +13,17 @@
 
 .bar {
     background-color: gray;
-    border: 1.5px solid black;
+    border: 1px solid black;
+    border-bottom-style: none;
     width: 50px;
     margin: 0px 1px;
 }
 
 @media only screen and (max-width: 600px) {
     .bar {
-        border: 0.25px solid black;
+        border: 0px solid black;
         width: 25px;
-        margin: 0px 0.5px;
+        margin: 0px 0px;
     }
 }
   
