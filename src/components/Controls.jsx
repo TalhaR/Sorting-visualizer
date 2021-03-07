@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: 'grey',
+        backgroundColor: '#282c34',
     },
     arrayControls: {
         height: '100px',
@@ -47,7 +47,7 @@ function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
                     <Slider className={classes.slider} defaultValue={10} step={5} marks min={5} max={100} 
                             valueLabelDisplay="auto" disabled={isRunning} onChange={(e, value) => setSize(value)} />
 
-                    <Slider className={classes.slider} defaultValue={2} step={1} marks min={1} max={5} 
+                    <Slider className={classes.slider} defaultValue={2} step={1} marks min={1} max={10} 
                             valueLabelDisplay="auto" onChangeCommitted={(e, value) => setSpeed(value)} />
                 </Grid>
             </Grid>
@@ -61,10 +61,9 @@ function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
                 <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('merge')}>
                     Merge
                 </Button>
-                <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('heap')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('heap')}>
                     Heap
                 </Button>
-
             </Grid>
         </Grid>
     )

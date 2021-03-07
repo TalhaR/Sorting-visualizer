@@ -24,7 +24,7 @@ class Body extends React.Component {
             elements: [],
             isRunning: false,
             maxBars: 10,
-            speed: 50,
+            speed: 60,
         }
         this.resetArray = this.resetArray.bind(this);
         this.handleSort = this.handleSort.bind(this);
@@ -33,6 +33,8 @@ class Body extends React.Component {
         this.bubbleSort = this.bubbleSort.bind(this);
         this.quickSort = this.quickSort.bind(this);
         this.mergeSort = this.mergeSort.bind(this);
+        this.heapSort = this.heapSort.bind(this);
+        this.heapify = this.heapify.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +52,7 @@ class Body extends React.Component {
 
     handleSpeed(num) {
         if (num === this.state.speed) return;
-        this.setState({speed: 50 / num});
+        this.setState({speed: 60 / num});
     }
 
     handleSort(algorithm) {
@@ -67,11 +69,70 @@ class Body extends React.Component {
                 this.mergeSort(array);
                 break;
             case 'heap':
+                this.heapSort(array);
                 break;
             default:
                 console.log('unexpected parameter for handleSort');
                 this.setState({isRunning: false,});
         }
+    }
+
+    async heapify(array, index, size, domBars) {
+        let left = 2 * index;
+        let right = left + 1;
+        let max;
+
+        if (right < size) {
+            setColor([domBars[left], domBars[right]], 'green');
+            await sleep(this.state.speed);
+            if (array[left].props.height >= array[right].props.height) {
+                max = left;
+            } else {
+                max = right;
+            }
+            setColor([domBars[left], domBars[right]], 'gray');
+        } 
+        else if (left < size) {
+            max = left;
+        } 
+        else return;
+
+        setColor([domBars[index], domBars[max]], 'green');
+        await sleep(this.state.speed);
+        if (array[index].props.height < array[max].props.height) {
+            setColor([domBars[index], domBars[max]], 'red');
+            [array[index], array[max]] = [array[max], array[index]];
+            this.setState({elements: array});
+            await sleep(this.state.speed);
+            setColor([domBars[index], domBars[max]], 'gray');
+
+            await this.heapify(array, max, size, domBars); 
+        }
+        setColor([domBars[index], domBars[max]], 'gray');
+    }
+
+    async heapSort(array) {
+        const size = array.length;
+        const domBars = document.getElementsByClassName('bar');
+
+        for(let i = Math.floor(size / 2) - 1; i >= 0; --i) {
+            await this.heapify(array, i, size, domBars);
+        }
+
+        for(let i = size - 1; i >= 0; --i) {
+            setColor([domBars[i], domBars[0]], 'red');
+            [array[0], array[i]] = [array[i], array[0]];
+            
+            this.setState({elements: array});
+            await sleep(this.state.speed);
+            setColor([domBars[0]], 'gray');
+            setColor([domBars[i]], 'purple');
+
+            await this.heapify(array, 0, i, domBars);
+        }
+
+        this.setState({elements: array});
+        this.setState({isRunning: false,});
     }
 
     async quickSort(array) {
