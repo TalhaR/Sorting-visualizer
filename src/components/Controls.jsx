@@ -48,7 +48,7 @@ function Controls({setSorter, setSize, resetArray, isRunning}) {
                 <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('bubble')}>
                     Bubble
                 </Button>
-                <Button color="primary" variant="contained" disabled={true} onClick={() => selectSorter('quick')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('quick')}>
                     Quick
                 </Button>
                 <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('merge')}>
