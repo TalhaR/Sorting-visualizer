@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     },
     arrayControls: {
         height: '100px',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         flexWrap: 'wrap',
         '& > *': {
@@ -22,28 +22,27 @@ const useStyles = makeStyles((theme) => ({
         '& > *': {
             margin: theme.spacing(1),
         },
+        [theme.breakpoints.up('md')]: {
+            '& > *': {
+                margin: theme.spacing(2),
+            },
+        }
     },
-    slider: {
-    }
+    slider: {}
 }));
 
 function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
     const classes = useStyles();
 
-    const selectSorter = (algorithm) => {
-        setSorter(algorithm);
-    }
-
     return (
         <Grid container item xs={12} className={classes.root} component="section">
             <Grid container item xs={12} sm={6} className={classes.arrayControls}>
                 <Grid item>
-                    <Button color="primary" variant="contained" disabled={isRunning} onClick={() => resetArray()}>
+                    <Button color="primary" variant="contained" disabled={isRunning} onClick={resetArray}>
                         Reset
                     </Button>
                 </Grid>
                 <Grid item xs={7} md={8}>
-
                     <Slider className={classes.slider} defaultValue={10} step={5} marks min={5} max={100} 
                             valueLabelDisplay="auto" disabled={isRunning} onChange={(e, value) => setSize(value)} />
 
@@ -52,16 +51,16 @@ function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
                 </Grid>
             </Grid>
             <Grid item xs={12} sm={6} className={classes.sortControls}>
-                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('bubble')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => setSorter('bubble')}>
                     Bubble
                 </Button>
-                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('quick')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => setSorter('quick')}>
                     Quick
                 </Button>
-                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('merge')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => setSorter('merge')}>
                     Merge
                 </Button>
-                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => selectSorter('heap')}>
+                <Button color="primary" variant="contained" disabled={isRunning} onClick={() => setSorter('heap')}>
                     Heap
                 </Button>
             </Grid>
