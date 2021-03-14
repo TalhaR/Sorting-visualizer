@@ -19,7 +19,6 @@ function setColor(domBars, color) {
 class Body extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             elements: [],
             isRunning: false,
