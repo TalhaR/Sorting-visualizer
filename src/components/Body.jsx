@@ -22,10 +22,12 @@ class Body extends React.Component {
         this.state = {
             elements: [],
             isRunning: false,
-            maxBars: 10,
+            maxBars: 50,
             speed: 60,
         }
         this.resetArray = this.resetArray.bind(this);
+        this.resetProps = this.resetPropPositions.bind(this);
+        this.haltSort = this.haltSort.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.handleSize = this.handleSize.bind(this);
         this.handleSpeed = this.handleSpeed.bind(this);
@@ -42,6 +44,11 @@ class Body extends React.Component {
 
     componentDidUpdate() {}
 
+    haltSort() {
+        this.setState({isRunning: false});
+        this.resetPropPositions();
+    }
+
     handleSize(num) {
         if (num === this.state.maxBars) return;
 
@@ -54,8 +61,8 @@ class Body extends React.Component {
         this.setState({speed: 60 / num});
     }
 
-    handleSort(algorithm) {
-        this.setState({isRunning: true});
+    async handleSort(algorithm) {
+        await this.setState({isRunning: true});
         const array = [...this.state.elements];
         switch (algorithm) {
             case 'bubble':
@@ -77,6 +84,7 @@ class Body extends React.Component {
     }
 
     async heapify(array, index, size, domBars) {
+        if (!this.state.isRunning) return;
         let left = 2 * index;
         let right = left + 1;
         let max;
@@ -115,10 +123,19 @@ class Body extends React.Component {
         const domBars = document.getElementsByClassName('bar');
 
         for(let i = Math.floor(size / 2) - 1; i >= 0; --i) {
+            if (!this.state.isRunning) {
+                this.resetPropPositions();
+                return;
+            }
             await this.heapify(array, i, size, domBars);
         }
 
         for(let i = size - 1; i >= 0; --i) {
+            if (!this.state.isRunning) {
+                setColor([...domBars], 'gray');
+                this.resetPropPositions();
+                return;
+            }
             setColor([domBars[i], domBars[0]], 'red');
             [array[0], array[i]] = [array[i], array[0]];
             
@@ -137,12 +154,19 @@ class Body extends React.Component {
     async quickSort(array) {
         const domBars = document.getElementsByClassName('bar');
 
+        // choosing last element in array as pivot
         const partition = async (array, start, end) => {
             const pivotValue = array[end];
             let pivotIndex = start;
             setColor([domBars[end]], 'yellow');
 
             for(let i = start; i < end; ++i) {
+                if (!this.state.isRunning) { 
+                    setColor([domBars[end]], 'gray');
+                    this.resetPropPositions();
+                    return pivotIndex;
+                }
+
                 setColor([domBars[i]], 'green');
                 await sleep(this.state.speed);
 
@@ -171,8 +195,12 @@ class Body extends React.Component {
         const stack = [[0, array.length - 1]];
 
         while(stack.length !== 0) {
-            const [start, end] = stack.pop();
+            if (!this.state.isRunning) {
+                this.resetPropPositions();
+                return;
+            }
 
+            const [start, end] = stack.pop();
             const pivotIndex = await partition(array, start, end);
 
             if (pivotIndex - 1 > start) {
@@ -192,6 +220,8 @@ class Body extends React.Component {
         const domBars = document.getElementsByClassName('bar');
 
         for (let i = 0; i < animations.length; ++i) {
+            if (!this.state.isRunning) return;
+
             if (i % 2 === 0) {
                 const [index1, index2] = animations[i];
 
@@ -200,15 +230,17 @@ class Body extends React.Component {
                 setColor([domBars[index1], domBars[index2]], 'gray');
             } else {
                 const [index1, element] = animations[i];
-                array[index1] = <Element key={'overwrite' + i} height={element.props.height} />;
+                const index2 = parseInt(element.props.pos)
+                array[index1] = <Element key={new Date().getTime()} pos={index1} height={element.props.height} />;
                 
                 this.setState({elements: array});
-                setColor([domBars[index1], domBars[element.key]], 'red');
+                setColor([domBars[index1], domBars[index2]], 'red');
                 await sleep(this.state.speed);
-                setColor([domBars[index1], domBars[element.key]], 'gray');
+                setColor([domBars[index1], domBars[index2]], 'gray');
             }
         }
         this.setState({isRunning: false});
+        this.resetPropPositions();
     }
     
     async bubbleSort(array) {
@@ -216,6 +248,11 @@ class Body extends React.Component {
 
         for(let i = 0; i < array.length; ++i) {
             for(let j = 0; j < array.length - 1 - i; ++j) {
+                if (!this.state.isRunning) {
+                    setColor([...domBars], 'gray');
+                    this.resetPropPositions();
+                    return;
+                }
                 // highlight comparing elements in green
                 setColor([domBars[j], domBars[j + 1]], 'green');
                 await sleep(this.state.speed);
@@ -231,7 +268,7 @@ class Body extends React.Component {
                 setColor([domBars[j], domBars[j + 1]], 'gray');
             }
             // sorted elements in purple
-            setColor([domBars[array.length - 1 - i]], 'purple');
+            setColor([domBars[array.length - 1 - i]], 'purple'); 
         }
 
         this.setState({isRunning: false});
@@ -244,7 +281,7 @@ class Body extends React.Component {
                     { this.state.elements }
                 </Grid>
                 <Controls setSorter={this.handleSort} setSize={this.handleSize} setSpeed={this.handleSpeed}
-                            resetArray={this.resetArray} isRunning={this.state.isRunning} />
+                            resetArray={this.resetArray} isRunning={this.state.isRunning} haltSort={this.haltSort} />
             </Grid>
         )
     };
@@ -254,15 +291,25 @@ class Body extends React.Component {
             return Math.floor(Math.random() * (high - low + 1) + low);
         }
 
-        const array = [];
-        for(let i = 0; i < this.state.maxBars; ++i) {
+        const array = new Array(this.state.maxBars);
+        for(let i = 0; i < array.length; ++i) {
             const height = getRandomInt(25, 500);
-            array.push(<Element height={height} key={i} />);
+            array[i] = <Element height={height} key={i} pos={i} />;
         }
 
         const domBars = document.getElementsByClassName('bar');
         for(const bar of domBars) {
             bar.style.backgroundColor = 'gray';
+        }
+
+        this.setState({elements: array});
+    }
+
+    resetPropPositions() {
+        const array = [...this.state.elements];
+
+        for(let i = 0; i < array.length; ++i) {
+            array[i] = <Element pos={i} height={array[i].props.height} key={array[i].key} />;
         }
 
         this.setState({elements: array});
