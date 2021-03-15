@@ -31,15 +31,19 @@ const useStyles = makeStyles((theme) => ({
     slider: {}
 }));
 
-function Controls({setSorter, setSize, setSpeed, resetArray, isRunning}) {
+function Controls({setSorter, setSize, setSpeed, resetArray, isRunning, haltSort}) {
     const classes = useStyles();
+
+    const handleReset = () => {
+        isRunning ? haltSort() : resetArray();
+    }
 
     return (
         <Grid container item xs={12} className={classes.root} component="section">
             <Grid container item xs={12} sm={6} className={classes.arrayControls}>
                 <Grid item>
-                    <Button color="primary" variant="contained" disabled={isRunning} onClick={resetArray}>
-                        Reset
+                    <Button color="primary" variant="contained" onClick={handleReset}>
+                        { isRunning? <>Stop</> : <>Reset</> }
                     </Button>
                 </Grid>
                 <Grid item xs={7} md={8}>
